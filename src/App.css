@@ -1,38 +1,50 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: #282c34;
+  color: white;
+  height: 100vh;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  grid-column: span 2;
+  height: 5em;
+}
+
+.App-header > h1 {
+  margin-left: 1em;
+}
+
+.Display {
+  display: grid;
+  grid-template-rows: 1fr 5em;
+}
+
+.ProofState {
+  display:grid;
+  grid-template-columns: 1fr;
+  grid-gap: 50px;
+  margin: 2em;
+}
+
+.Goal {
+  margin-left: 2em;
+}
+
+.Buffer {
+  max-width: 90%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items:center;
+  background-color:darkblue;
+  color:white;
+  padding: 2em 1em;
+  margin: 1em;
 }
 
-.App-link {
-  color: #61dafb;
+.Goal {
+  color:pink;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Success {
+  color:greenyellow;
 }
