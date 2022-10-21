@@ -97,7 +97,7 @@ function App() {
           highlightActiveLine={true}
           style={{
             fontFamily: 'JetBrains Mono',
-            backgroundColor: "rgb(255,252,201)",
+            backgroundColor: "lightsteelblue",
             fontSize: "1.3rem",
           }}
         />
@@ -118,7 +118,8 @@ function App() {
               <li><strong>andE2 (a and b)</strong> proves <strong>b</strong> by changing the proof goal to <strong>(a and b)</strong>.</li>
               <li><strong>implI</strong> applies the implication-introduction rule to the goal.</li>
               <li><strong>implE (a {'=>'} b)</strong> proves <strong>b</strong> by adding two new goals, <strong>a {'=>'} b</strong> and <strong>a</strong>.</li>
-              <li>A single dash <strong>-</strong> installs a new proof goal from the list of remaining goals. The same line can also contain another command, thereby structuring the proof by cases.</li>
+              <li>A single dash <strong>{'"-"'}</strong> installs a new proof goal from the list of remaining goals. The same line can also contain another command, thereby structuring the proof by cases.</li>
+              <li><strong>lem</strong> proves any formula that fits the excluded middle.</li>
             </ul>
             and so on.
           </p>

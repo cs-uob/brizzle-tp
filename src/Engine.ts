@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { getJSDocClassTag } from "typescript";
-import { Formula, ProofState, Rule } from "./Types"
+import { Formula, not, ProofState, Rule } from "./Types"
 
 function updateState(ps : ProofState, r : Rule) : ProofState {
   if (r.dash) {
@@ -81,6 +81,42 @@ function updateState(ps : ProofState, r : Rule) : ProofState {
       if (f.operator !== 'impl') { throw new Error('Impl-introduction does not apply.') }
       const [ante, cons] = f.operands;
       return {...ps, assumptions : [...ps.assumptions, ante], current_goal: cons}
+    }
+    case 'implE': {
+      const f = ps.current_goal;
+      const p = r.param;
+      if (p === undefined || typeof p === 'number' || p.operator !== 'impl') { throw new Error('Impl-elimination needs an implicational motive.') }
+      const b = p.operands[0];
+      const new_goals = [ [[], p], [[], b] ] as [Formula[], Formula][]
+      return {...ps, current_goal: 'none', other_goals: [...ps.other_goals, ...new_goals]}
+    }
+    case 'notI': {
+      const f = ps.current_goal;
+      if (f.operator !== 'not') { throw new Error('Not-introduction does not apply.') }
+      const [ante] = f.operands;
+      return {...ps, assumptions : [...ps.assumptions, ante], 
+        current_goal: { operator: 'false', operands : [] }}
+    }
+    case 'notE': {
+      const f = ps.current_goal;
+      const p = r.param;
+      if (p === undefined || typeof p === 'number') { throw new Error('Not-elimination needs a motive.') }
+      const new_goals = [ [[], not(p)], [[], p] ] as [Formula[], Formula][]
+      return {...ps, current_goal: 'none', other_goals: [...ps.other_goals, ...new_goals]}
+    }
+    case 'dNeg': {
+      const f = ps.current_goal;
+      return { ...ps, current_goal: not(not(f)) }
+    }
+    case 'lem': {
+      const f = ps.current_goal;
+      if (f.operator !== 'or' || f.operands[0].operator != 'not'
+        || !_.isEqual(f.operands[0].operands[0], f.operands[1]))
+        { throw new Error('LEM does not apply.') }
+      return { ...ps, current_goal : 'none' }
+    }
+    case 'abort': {
+      return { ...ps, current_goal : { operator: 'false', operands: [] } }
     }
     default:
       throw new Error('Unsupported rule.')

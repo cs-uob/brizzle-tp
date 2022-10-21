@@ -53,6 +53,11 @@ const lexer = buildLexer([
   [true, /^orE/g, TokenKind.RuleName],
   [true, /^implI/g, TokenKind.RuleName],
   [true, /^implE/g, TokenKind.RuleName],
+  [true, /^notI/g, TokenKind.RuleName],
+  [true, /^notE/g, TokenKind.RuleName],
+  [true, /^dNeg/g, TokenKind.RuleName],
+  [true, /^lem/g, TokenKind.RuleName],
+  [true, /^abort/g, TokenKind.RuleName],
   [true, /^goal/g, TokenKind.RuleName],
   [true, /^assm/g, TokenKind.RuleName],
   [true, /^[a-z]+/g, TokenKind.Var],
@@ -90,11 +95,16 @@ const IMPL = apply(
 );
 
 const NOT = apply(
-  seq(str('('), str('~'), _FORMULA, str(')')),
-  ([x,y,phi]) => { return { operator: 'or', operands: [phi] } }
+  seq(str('~'), _FORMULA),
+  ([x,phi]) => { return { operator: 'not', operands: [phi] } }
 );
 
-_FORMULA.setPattern(alt(VAR, AND, OR, IMPL, NOT));
+const PFORMULA = apply(
+  seq(str('('), _FORMULA, str(')')),
+  ([x,phi, y]) => { return phi }
+);
+
+_FORMULA.setPattern(alt(VAR, AND, OR, IMPL, NOT, PFORMULA));
 
 const FORMULA = _FORMULA as Parser<TokenKind, Formula>;
 
@@ -113,6 +123,11 @@ const RULENAME = apply(
       case 'implI': return { rulename : 'implI' }
       case 'implE': return { rulename : 'implE' }
       case 'goal': return { rulename : 'goal' }
+      case 'notI': return { rulename : 'notI' }
+      case 'notE': return { rulename : 'notE' }
+      case 'dNeg': return { rulename : 'dNeg' }
+      case 'lem': return { rulename : 'lem' }
+      case 'abort': return { rulename : 'abort' }
       default:
         throw new Error('Unknown rule.')
     } 

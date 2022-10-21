@@ -4,8 +4,13 @@ type Formula = {
   var_name? : string;
 }
 
+function not(f : Formula) : Formula {
+  return { operator: 'not', operands: [f] }
+}
+
 function printFormula(f : Formula) : string {
   switch (f.operator) {
+    case 'false': return '⊥'
     case 'and': return '(' + printFormula(f.operands[0]) + ' ∧ ' + printFormula(f.operands[1]) + ')'
     case 'or': return '(' + printFormula(f.operands[0]) + ' ∨ ' + printFormula(f.operands[1]) + ')'
     case 'impl': return '(' + printFormula(f.operands[0]) + ' ⇨	' + printFormula(f.operands[1]) + ')'
@@ -37,4 +42,4 @@ type BufferState = {
 
 export type { Formula, Rule, ProofState, BufferState };
 
-export { printFormula };
+export { not, printFormula };
