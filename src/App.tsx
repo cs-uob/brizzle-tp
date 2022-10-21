@@ -110,16 +110,20 @@ function App() {
           <p>A rule might prove a goal, add more assumptions, or generate further proof goals.</p>
           <p>Instructions:
             <ul>
+              <li>The parser is not good. Use as many parentheses as possible.</li>
               <li>Press <strong>CTRL+ENTER</strong> to run the proof engine.</li>
               <li><strong>goal (a or b)</strong> resets the proof state to a new goal.</li>
+              <li>A single dash <strong>{'"-"'}</strong> installs a new proof goal from the list of remaining goals. The same line can also contain another command, thereby structuring the proof by cases.</li>
               <li><strong>assm n</strong> uses the n'th assumption.</li>
               <li><strong>andI</strong> applies the and-introduction rule to the goal.</li>
-              <li><strong>andE1 (a and b)</strong> proves <strong>a</strong> by changing the proof goal to <strong>(a and b)</strong>.</li>
-              <li><strong>andE2 (a and b)</strong> proves <strong>b</strong> by changing the proof goal to <strong>(a and b)</strong>.</li>
+              <li><strong>andE1 (a and b)</strong> proves <strong>a</strong> by changing the proof goal to <strong>(a and b)</strong>. Similarly for <strong>andE2</strong>.</li>
+              <li><strong>or1</strong> allows you to prove <strong>a or b</strong> by proving <strong>a</strong>. Similarly for <strong>orI2</strong>.</li>
+              <li><strong>orE (a or b)</strong> allows you to prove the goal by proving 
+              <strong>a or b</strong>, and then showing that the goal follows from either <strong>a</strong> or <strong>b</strong>.</li>
               <li><strong>implI</strong> applies the implication-introduction rule to the goal.</li>
               <li><strong>implE (a {'=>'} b)</strong> proves <strong>b</strong> by adding two new goals, <strong>a {'=>'} b</strong> and <strong>a</strong>.</li>
-              <li>A single dash <strong>{'"-"'}</strong> installs a new proof goal from the list of remaining goals. The same line can also contain another command, thereby structuring the proof by cases.</li>
               <li><strong>lem</strong> proves any formula that fits the excluded middle.</li>
+              <li><strong>notI</strong> proves <strong>¬ a</strong> by allowing you to prove <strong>⊥</strong> from <strong>a</strong>.</li>
             </ul>
             and so on.
           </p>
