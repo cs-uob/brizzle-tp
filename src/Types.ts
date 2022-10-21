@@ -30,6 +30,11 @@ type ProofState = {
   other_goals: [Formula[], Formula][]
 }
 
-export type { Formula, Rule, ProofState };
+type BufferState = {
+  text: string,
+  state: 'ok' | 'error'
+}
+
+export type { Formula, Rule, ProofState, BufferState };
 
 export { printFormula };

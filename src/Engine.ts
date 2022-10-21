@@ -6,6 +6,7 @@ function updateState(ps : ProofState, r : Rule) : ProofState {
   if (r.dash) {
     const p = ps.other_goals.shift();
     if (p === undefined) { throw new Error('No goals left.') }
+    if (ps.current_goal !== 'none') { throw new Error('Current goal not proven yet.') }
     const [as, g] = p;
     if (as && g) { ps.assumptions.push(...as); ps.current_goal = g; }
   }
