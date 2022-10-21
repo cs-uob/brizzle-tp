@@ -105,7 +105,7 @@ function App() {
       <Display proofState={proofState} buffer={buffer} />
       <div className="Help">
           <p>This is an LCF-style theorem prover for propositional logic.</p>
-          <p>At the very bottom of your screen is your <i>proof goal</i>.</p>
+          <p>At the bottom right of your screen is your <i>proof goal</i>, which is what you are currently proving.</p>
           <p>Every line is an instruction that applies a rule to the proof goal.</p>
           <p>A rule might prove a goal, add more assumptions, or generate further proof goals.</p>
           <p>Instructions:
