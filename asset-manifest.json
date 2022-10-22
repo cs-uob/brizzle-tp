@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/brizzle-tp/static/css/main.83809087.css",
-    "main.js": "/brizzle-tp/static/js/main.7bc5c2ad.js",
+    "main.js": "/brizzle-tp/static/js/main.4234e91f.js",
     "static/js/787.cb1a8813.chunk.js": "/brizzle-tp/static/js/787.cb1a8813.chunk.js",
     "static/media/BristolLogo.png": "/brizzle-tp/static/media/BristolLogo.972ce040b5fb1914f38a.png",
     "index.html": "/brizzle-tp/index.html",
     "main.83809087.css.map": "/brizzle-tp/static/css/main.83809087.css.map",
-    "main.7bc5c2ad.js.map": "/brizzle-tp/static/js/main.7bc5c2ad.js.map",
+    "main.4234e91f.js.map": "/brizzle-tp/static/js/main.4234e91f.js.map",
     "787.cb1a8813.chunk.js.map": "/brizzle-tp/static/js/787.cb1a8813.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.83809087.css",
-    "static/js/main.7bc5c2ad.js"
+    "static/js/main.4234e91f.js"
   ]
 }
