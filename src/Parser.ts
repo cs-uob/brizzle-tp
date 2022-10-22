@@ -171,8 +171,10 @@ const ASSMNO = apply(
 
 const PARAM = alt(FORMULA, ASSMNO);
 
+const DASH = tok(TokenKind.Dash);
+
 const RULE : Parser<TokenKind, Rule> = apply(
-  seq(opt(tok(TokenKind.Dash)), RULENAME, opt(PARAM)),
+  seq(opt(DASH), opt(RULENAME), opt(PARAM)),
   ([dash, rn, param]) => 
     param ?
       {...rn, dash: dash ? true : false, param: param} 

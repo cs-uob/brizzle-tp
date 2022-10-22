@@ -24,7 +24,7 @@ function printFormula(f : Formula) : string {
 }
 
 type Rule = {
-  rulename : string,
+  rulename? : string,
   param? : number | Formula
   dash? : boolean
 }

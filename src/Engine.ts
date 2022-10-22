@@ -86,6 +86,7 @@ function updateState(ps : ProofState, r : Rule) : ProofState {
       const f = ps.current_goal;
       const p = r.param;
       if (p === undefined || typeof p === 'number' || p.operator !== 'impl') { throw new Error('Impl-elimination needs an implicational motive.') }
+      if (!_.isEqual(p.operands[1], f)) { throw new Error('The proof goal does not match the motive.') }
       const b = p.operands[0];
       const new_goals = [ [[], p], [[], b] ] as [Formula[], Formula][]
       return {...ps, current_goal: 'none', other_goals: [...ps.other_goals, ...new_goals]}
