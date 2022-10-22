@@ -38,11 +38,15 @@
   margin: 2em;
 }
 
+.Processed {
+  background-color:dodgerblue;
+}
+
 .Goal {
   margin-left: 2em;
 }
 
-.Buffer {
+.MiniBuffer {
   max-width: 90%;
   display: flex;
   align-items:center;

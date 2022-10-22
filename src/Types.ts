@@ -24,7 +24,7 @@ function printFormula(f : Formula) : string {
 }
 
 type Rule = {
-  rulename? : string,
+  rulename : string,
   param? : number | Formula
   dash? : boolean
 }
@@ -35,11 +35,11 @@ type ProofState = {
   other_goals: [Formula[], Formula][]
 }
 
-type BufferState = {
+type MiniBufferState = {
   text: string,
   state: 'ok' | 'error'
 }
 
-export type { Formula, Rule, ProofState, BufferState };
+export type { Formula, Rule, ProofState, MiniBufferState };
 
 export { not, printFormula };
