@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { apply, buildLexer, expectEOF, expectSingleResult, list_sc, lrec_sc, Parser, rule, Token } from 'typescript-parsec';
-import { alt, opt, list, seq, str, tok } from 'typescript-parsec';
+import { alt, opt, seq, str, tok } from 'typescript-parsec';
 import { Formula, Rule } from './Types';
 
 enum TokenKind { 
@@ -69,45 +69,75 @@ const lexer = buildLexer([
   [true, /^=>/g, TokenKind.Or], 
   [true, /^~/g, TokenKind.Not], 
   [true, /^\n/g, TokenKind.Newline],
-  [false, /^\s+/g, TokenKind.Space]
+  [false, /^[^\S\r\n]+/g, TokenKind.Space]
 ]);
 
-const VAR = apply(
+// Boolean formula parser
+
+const VAR : Parser<TokenKind, Formula> = apply(
   tok(TokenKind.Var),
-  (tok) => { return { operator: 'var', var_name: tok.text } }
+  (tok) => { return { operator: 'var', var_name: tok.text, operands: [] } }
 );
 
 const _FORMULA = rule();
 
+const PFORMULA = apply(
+  seq(str('('), _FORMULA, str(')')),
+  ([x, phi, y]) => phi
+) as Parser<TokenKind, Formula>;
+
+const LIT : Parser<TokenKind, Formula> = alt(
+  VAR,
+  apply(
+    seq(str('~'), VAR),
+  ([x,phi]) => { return { operator: 'not', operands: [phi] } }
+  )
+);
+
+const NOT = rule();
+NOT.setPattern(
+  apply(
+    seq(str('~'), alt(NOT, PFORMULA)),
+    ([x,phi]) => { return { operator: 'not', operands: [phi] } }
+  )
+);
+
 const AND = apply(
-  seq(str('('), _FORMULA, str('&'), _FORMULA, str(')')),
-  ([x,phi1,y,phi2,z]) => { return { operator: 'and', operands: [phi1, phi2] } }
+  seq(alt(LIT, NOT, PFORMULA), str('&'), list_sc(alt(LIT, NOT, PFORMULA), str('&'))),
+  function ([l, _, xs]) { 
+    return {
+      operator: 'and',
+      operands: [l, xs.reduce((a, l) => { return { operator: 'and', operands: [a, l] } })] 
+    }
+  }
 );
 
 const OR = apply(
-  seq(str('('), _FORMULA, str('or'), _FORMULA, str(')')),
-  ([x,phi1,y,phi2,z]) => { return { operator: 'or', operands: [phi1, phi2] } }
+  seq(alt(LIT, NOT, PFORMULA), str('or'), list_sc(alt(LIT, NOT, PFORMULA), str('or'))),
+  function ([l, _, xs]) { 
+    return {
+      operator: 'or',
+      operands: [l, xs.reduce((a, l) => { return { operator: 'or', operands: [a, l] } })] 
+    }
+  }
 );
 
 const IMPL = apply(
-  seq(str('('), _FORMULA, str('=>'), _FORMULA, str(')')),
-  ([x,phi1,y,phi2,z]) => { return { operator: 'impl', operands: [phi1, phi2] } }
+  seq(alt(LIT, NOT, PFORMULA), str('=>'), list_sc(alt(LIT, NOT, PFORMULA), str('=>'))),
+  function ([l, _, xs]) { 
+    return {
+      operator: 'impl',
+      operands: [l, xs.reduce((a, l) => { return { operator: 'impl', operands: [a, l] } })] 
+    }
+  }
 );
 
-const NOT = apply(
-  seq(str('~'), _FORMULA),
-  ([x,phi]) => { return { operator: 'not', operands: [phi] } }
-);
-
-const PFORMULA = apply(
-  seq(str('('), _FORMULA, str(')')),
-  ([x,phi, y]) => { return phi }
-);
-
-_FORMULA.setPattern(alt(VAR, AND, OR, IMPL, NOT, PFORMULA));
+_FORMULA.setPattern(alt(LIT, AND, OR, IMPL, NOT, PFORMULA));
 
 const FORMULA = _FORMULA as Parser<TokenKind, Formula>;
 
+
+// Rule parsing
 
 const RULENAME = apply(
   tok(TokenKind.RuleName),
@@ -142,7 +172,7 @@ const ASSMNO = apply(
 const PARAM = alt(FORMULA, ASSMNO);
 
 const RULE : Parser<TokenKind, Rule> = apply(
-  seq(opt(tok(TokenKind.Dash)), opt(RULENAME), opt(PARAM)),
+  seq(opt(tok(TokenKind.Dash)), RULENAME, opt(PARAM)),
   ([dash, rn, param]) => 
     param ?
       {...rn, dash: dash ? true : false, param: param} 
@@ -157,7 +187,9 @@ function process(s : string) : Rule[] {
     const result = expectSingleResult(expectEOF(SCRIPT.parse(lexer.parse(s))));
     return result
   }
-  catch (e) { throw Error('Lexing and parsing failed.')}
+  catch (e) {
+    let m = (e as Error).message;
+    throw new Error('Lexing and parsing failed:' + m.substring(m.lastIndexOf(':') + 1)) }
 }
 
 export default process;
